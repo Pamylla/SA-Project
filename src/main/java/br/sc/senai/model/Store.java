@@ -1,10 +1,12 @@
 package br.sc.senai.model;
 
-import javax.persistence.*;
 import java.util.List;
+import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "store")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "queues"})
 public class Store {
 
     @Id

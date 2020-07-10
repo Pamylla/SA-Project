@@ -19,7 +19,7 @@ public class QueueController {
 
     @GetMapping(path = "/queues")
     public @ResponseBody
-    ResponseEntity<Iterable<Queue>> getAllUsers() {
+    ResponseEntity<Iterable<Queue>> getAllQueues() {
 
         try {
             Iterable<Queue> queues = queueRepository.findAll();
@@ -33,10 +33,10 @@ public class QueueController {
     }
 
     @PostMapping(path = "/queues")
-    public @ResponseBody ResponseEntity<Queue> addNewUser(@RequestBody Queue queue) {
+    public @ResponseBody ResponseEntity<Queue> addNewQueue(@RequestBody Queue queue) {
         try {
-            Queue newUser = queueRepository.save(queue);
-            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+            Queue newQueue = queueRepository.save(queue);
+            return new ResponseEntity<>(newQueue, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
         }
