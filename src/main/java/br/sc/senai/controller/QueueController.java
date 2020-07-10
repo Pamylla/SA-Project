@@ -3,46 +3,71 @@ package br.sc.senai.controller;
 import br.sc.senai.model.Queue;
 import br.sc.senai.repository.QueueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+import java.util.Optional;
+
 @RestController
-@RequestMapping(path = "/queue")
+@RequestMapping(path = "/sa")
 public class QueueController {
 
     @Autowired
     private QueueRepository queueRepository;
 
-    @GetMapping("/all")
-    public  @ResponseBody
-    Iterable<Queue> getAllQueues() {
-        return queueRepository.findAll();
-    }
-
-    @PostMapping(path = "/add")
+    @GetMapping(path = "/queues")
     public @ResponseBody
-    String addNewQueue(@RequestParam String qrCode, @RequestParam int length,
-                       @RequestParam String begin, @RequestParam String end) {
-        Queue q = new Queue();
-        q.setQrCode(qrCode);
-        q.setLength(length);
-        q.setBegin(begin);
-        q.setEnd(end);
-        queueRepository.save(q);
-        return "Fila cadastrada com sucesso no banco de dados";
+    ResponseEntity<Iterable<Queue>> getAllUsers() {
+
+        try {
+            Iterable<Queue> queues = queueRepository.findAll();
+            if (((Collection<?>) queues).size() == 0) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(queues, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PostMapping(path = "/update")
-    public  @ResponseBody
-    String updateQueue(@RequestParam Integer id ,@RequestParam String qrCode) {
-        Queue q = queueRepository.findById(id).get();
-        q.setQrCode(qrCode);
-        return "qrCode da fila de id " + q.getId() + " atualizado no banco de dados";
+    @PostMapping(path = "/queues")
+    public @ResponseBody ResponseEntity<Queue> addNewUser(@RequestBody Queue queue) {
+        try {
+            Queue newUser = queueRepository.save(queue);
+            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
+        }
     }
 
-    @PostMapping(path = "/remove")
-    public @ResponseBody
-    String removeQueue(@RequestParam Integer id) {
-        queueRepository.deleteById(id);
-        return "Loja excluída do banco de dados";
+    @PutMapping("/queues/{id}")
+    public @ResponseBody ResponseEntity<Queue> updateQueue(@PathVariable("id") Integer id, @RequestBody Queue queue) {
+
+        Optional<Queue> queueData = queueRepository.findById(id);
+
+        if (queueData.isPresent()) {
+            Queue updatedQueue = queueData.get();
+            updatedQueue.setQrCode(queue.getQrCode());
+            updatedQueue.setLength(queue.getLength());
+            updatedQueue.setStatus(queue.isStatus());
+            updatedQueue.setBegin(queue.getBegin());
+            updatedQueue.setEnd(queue.getEnd());
+            return new ResponseEntity<>(queueRepository.save(updatedQueue), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/queues/{id}")
+    public @ResponseBody ResponseEntity<HttpStatus> removeQueue(@PathVariable("id") Integer id) {
+
+        try {
+            queueRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
     }
 }
