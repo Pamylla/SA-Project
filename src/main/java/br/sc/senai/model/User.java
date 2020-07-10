@@ -1,11 +1,10 @@
 package br.sc.senai.model;
 
 import java.io.Serializable;
-
 import javax.persistence.*;
 
 @Entity
-@Table(name="TB_USER")
+@Table(name="user")
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -18,9 +17,9 @@ public class User implements Serializable {
 
     private String telephone;
 
-    //@ManyToOne
-    //@JoinColumn(name="queue_id")
-    //private Queue queue;
+    @ManyToOne
+    @JoinColumn(name="queue_id")
+    private Queue queue;
 
     public long getId() {
         return id;
@@ -46,11 +45,11 @@ public class User implements Serializable {
         this.telephone = telephone;
     }
 
-    //public Queue getQueue() {
-    // return queue;
-    //}
+    public Queue getQueue() {
+     return queue;
+    }
 
-    //public void setQueue(Queue queue) {
-    //  this.queue = queue;
-    //}
+    public void setQueue(Queue queue) {
+      this.queue = queue;
+    }
 }

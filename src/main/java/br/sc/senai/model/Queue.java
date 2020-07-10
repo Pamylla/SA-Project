@@ -1,6 +1,7 @@
 package br.sc.senai.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "queue")
@@ -14,9 +15,18 @@ public class Queue {
 
     private int length;
 
+    private boolean status;
+
     private String begin;
 
     private String end;
+
+    @OneToMany(mappedBy = "queue", fetch = FetchType.LAZY)
+    private List<User> users;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     public Integer getId() {
         return id;
@@ -42,6 +52,14 @@ public class Queue {
         this.length = length;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     public String getBegin() {
         return begin;
     }
@@ -56,5 +74,21 @@ public class Queue {
 
     public void setEnd(String end) {
         this.end = end;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
     }
 }
