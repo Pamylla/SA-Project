@@ -1,9 +1,12 @@
 package br.sc.senai.model;
 
+import java.util.List;
 import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name = "stores")
+@Table(name = "store")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "queues"})
 public class Store {
 
     @Id
@@ -15,6 +18,9 @@ public class Store {
     private String email;
 
     private String password;
+
+   @OneToMany(mappedBy = "store", fetch = FetchType.LAZY)
+    private List<Queue> queues;
 
     public Integer getId() {
         return id;
@@ -46,5 +52,13 @@ public class Store {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Queue> getQueues() {
+        return queues;
+    }
+
+    public void setQueues(List<Queue> queues) {
+        this.queues = queues;
     }
 }

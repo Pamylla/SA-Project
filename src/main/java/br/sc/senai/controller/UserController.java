@@ -18,23 +18,32 @@ public class UserController {
     UserRepository userRepository;
 
     @GetMapping("/users")
-    public List<User> listUsers() {
-        return userRepository.findAll();
-    }
-
-    @GetMapping("/users/{id}")
-    public User getUser(@PathVariable(value = "id") long id) {
-        return userRepository.findById(id);
+    public @ResponseBody ResponseEntity<Iterable<User>> getAllUsers() {
+        try {
+            Iterable<User> users = userRepository.findAll();
+            if (((Collection<?>) users).size() == 0) {
+                return new ResponseEntity<>(users, HttpStatus.OK);
+            }
+            return new ResponseEntity<>(users, HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PostMapping("/users")
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+    public @ResponseBody ResponseEntity<User> createUser(@RequestBody User user) {
+        try {
+            User newUser = userRepository.save(user);
+            return new ResponseEntity<>(user, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.EXPECTATION_FAILED);
+        }
     }
+
 
     @DeleteMapping("users/{id}")
     public @ResponseBody
-    ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") long id) {
+    ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") Integer id) {
 
         try {
             userRepository.deleteById(id);
@@ -45,10 +54,9 @@ public class UserController {
     }
 
     @PutMapping("users/{id}")
-    public @ResponseBody
-    ResponseEntity<User> updateUser(@PathVariable("id") long id, @RequestBody User user) {
+    public @ResponseBody ResponseEntity<User> updateUser(@PathVariable("id") Integer id, @RequestBody User user) {
 
-        Optional<User> userData = Optional.ofNullable(userRepository.findById(id));
+        Optional<User> userData = userRepository.findById(id);
 
         if (userData.isPresent()) {
             User updatedUser = userData.get();

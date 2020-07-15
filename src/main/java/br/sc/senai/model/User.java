@@ -1,32 +1,30 @@
 package br.sc.senai.model;
 
-import java.io.Serializable;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 @Entity
-@Table(name="TB_USER")
-public class User implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@Table(name="user")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "queues"})
+public class User {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private long id;
+    private Integer id;
 
     private String name;
 
     private String telephone;
 
-    //@ManyToOne
-    //@JoinColumn(name="queue_id")
-    //private Queue queue;
+    @ManyToOne
+    @JoinColumn(name="queue_id")
+    private Queue queue;
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -46,11 +44,11 @@ public class User implements Serializable {
         this.telephone = telephone;
     }
 
-    //public Queue getQueue() {
-    // return queue;
-    //}
+    public Queue getQueue() {
+     return queue;
+    }
 
-    //public void setQueue(Queue queue) {
-    //  this.queue = queue;
-    //}
+    public void setQueue(Queue queue) {
+      this.queue = queue;
+    }
 }

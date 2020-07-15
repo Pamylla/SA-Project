@@ -1,9 +1,12 @@
 package br.sc.senai.model;
 
+import java.util.List;
 import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "queue")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "users"})
 public class Queue {
 
     @Id
@@ -14,9 +17,18 @@ public class Queue {
 
     private int length;
 
+    private boolean status;
+
     private String begin;
 
     private String end;
+
+    @OneToMany(mappedBy = "queue", fetch = FetchType.LAZY)
+    private List<User> users;
+
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     public Integer getId() {
         return id;
@@ -42,6 +54,14 @@ public class Queue {
         this.length = length;
     }
 
+    public boolean isStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
+
     public String getBegin() {
         return begin;
     }
@@ -56,5 +76,21 @@ public class Queue {
 
     public void setEnd(String end) {
         this.end = end;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
     }
 }
