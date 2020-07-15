@@ -1,17 +1,16 @@
 package br.sc.senai.model;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 @Entity
 @Table(name="user")
-public class User implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "queues"})
+public class User {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private long id;
+    private Integer id;
 
     private String name;
 
@@ -21,11 +20,11 @@ public class User implements Serializable {
     @JoinColumn(name="queue_id")
     private Queue queue;
 
-    public long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
